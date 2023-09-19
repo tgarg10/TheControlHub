@@ -3,6 +3,8 @@
 ## Introduction
 Welcome to the Farm Monitoring Dashboard, a project developed for the Engineering Innovation Project. Our web application, powered by Django, HTML, JavaScript, and hosted on AWS Lightsail, enables real-time monitoring of an automatic farm while reporting essential statistics. To achieve this, we've integrated ESP32 camera Arduinos with Wi-Fi cards, AWS IoT, and an S3 bucket for seamless data collection and analysis.
 
+<a src"https://www.youtube.com/watch?v=t41uLOSE-BM">Check a little bit of the website in action here! </a>
+
 ## Features
 + Real-time Monitoring: View live camera feeds from ESP32 cameras placed throughout the farm.
 
