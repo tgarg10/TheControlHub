@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Monitor</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>  
+        <link rel="icon" href="https://i.imgur.com/RCADv79.png">
+        <script src="http://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+        <style>
+            .carousel-control-next,
+            .carousel-control-prev{
+            filter: invert(100%);}
+            body {
+                position:relative;
+            }
+        </style>
+    </head>
+    <body>   
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="padding: 10px 40px;">
+            <a class="navbar-brand" href="http://thecontrolhub.com.s3-website-ap-southeast-1.amazonaws.com/"><h2>TheControlHub</h2></a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://s3.ap-southeast-1.amazonaws.com/thecontrolhub-livecamera.com/livecameras.html"><h4>Live Cameras</h4></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/monitor"><h4>Monitor</h4></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logs"><h4>Plant Logs</h4></a>
+                </li>
+            </ul>
+        </nav>
+        <body data-bs-spy: "scroll" data-bs-target:".navbar" data-bs-offset="50">
+            <nav class="navbar navbar-expand-sm bg-light navbar-light sticky-top" style="padding: 2px 40px;">
+                <div class = "container-fluid">
+                    <ul class="navbar-nav">
+                        <a class="navbar-brand" href="/monitor"><h2>Monitor &#128202</h2></a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#seeds"><h4>Seed Types </h4></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#soilmoisture"><h4>Soil Moisture </h4></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#plantheight"><h4>Plant Height </h4></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#farmyield"><h4>Farm Yield </h4></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#today"><h4>Today's Soil Moisture </h4></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div id = "seeds" class = "container-fluid bg-light" style="padding:6% 14%;">
+                <div class = "row">
+                    <div class = "col-sm-9 col-md-6 col-lg-8 col-xl-6"> 
+                        <canvas id="pieChart" style="width:80%"></canvas>     
+                    </div>
+                    <div class = "col-sm-9 col-md-6 col-lg-8 col-xl-6" style="padding:7% 9%;">
+                        <h1>Seed Types</h1>
+                        <p>Types of Seeds Sown in the farm.</p> 
+                    </div>
+                </div>
+            </div>
+            <div id = "soilmoisture" class = "container-fluid bg-info text-dark" style="padding:8% 14%;">
+                <div class = "row">
+                    <div class = "col-sm-3 col-md-6 col-lg-4 col-xl-3" style="padding:4% 2%;">   
+                        <h1>Soil Moisture - Water</h1>
+                        <p>Observed Soil Moisture from Soil Moisture Sensor.</p>
+                        <p>Water Irrigated by the Irrigator Automatically.</p> 
+                    </div>
+                    <div class = "col-sm-9 col-md-6 col-lg-8 col-xl-9">
+                        <canvas id="lineChart" style="width:80%"></canvas>    
+                    </div>
+                </div>   
+            </div>
+            <div id = "plantheight" name = "plantheight" class = "container-fluid bg-warning text-dark" style="padding:6% 14%;">
+                <div id = "homecarousel" class="carousel slide" data-slide="carousel">
+                    <ul class = "carousel-indicators">
+                    <li data-target = "#homecarousel" data-slide-to="0" class="active"></li>
+                    <li data-target = "#homecarousel" data-slide-to="1"></li>
+                    </ul>
+                    <div class = "carousel-inner">
+                        <div class="carousel-item active">  
+                                <h1>Green-Gram Plants' Height</h1>
+                                <p>Recorded Plant Height of Green Gram plants on specific days.</p>
+                                <canvas id="barChart1" style="width:80%;"></canvas>    
+                        </div>
+                        <div class="carousel-item">
+                                <h1>Tomato Plants' Height</h1>
+                                <p>Recorded Plant Height of Tomato plants on specific days.</p>
+                                <canvas id="barChart2" style="width:80%;"></canvas>  
+                        </div>
+                    </div>
+                </div> 
+                <a class = "carousel-control-prev" href = "#homecarousel" data-slide = "prev">
+                    <span class = "carousel-control-prev-icon"></span>
+                </a> 
+                <a class = "carousel-control-next" href = "#homecarousel" data-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </a>
+                <p></p>
+            </div>
+            <div id = "farmyield" class = "container-fluid bg-success text-light" style="padding:8% 14%;">
+                <div class = "row">
+                    <div class = "col-sm-3 col-md-6 col-lg-4 col-xl-3" style="padding:4% 1%">  
+                        <h1>Seeds Sown - Harvest</h1>
+                        <p>Yield of Farm is calculated by Harvest/Seeds Sown.</p>
+                    </div>
+                    <div class = "col-sm-9 col-md-6 col-lg-8 col-xl-9">
+                        <canvas id="linebarChart" style="width:80%"></canvas>    
+                    </div>
+                </div>  
+            </div>
+            <div id = "today" class = "container-fluid bg-danger text-light" style="padding:6% 14%;">
+                <div class = "row">
+                    <div class = "col-sm-9 col-md-6 col-lg-8 col-xl-8">
+                        <h1>Today's Soil Moisture</h1>
+                        <p></p>
+                        <p>Current Soil Moisture Conditions.</p>
+                        <canvas id="gaugeChart" style="width:80%"></canvas>
+                        <h2 style="color:black; padding: 1% 35%">{{todaySoilMoisture}}</h2>    
+                    </div>
+                    <div class = "col-sm-3 col-md-6 col-lg-4 col-xl-3" style="padding:14% 2%;">  
+                        <h4> &#128998 Under-Irrigated</h4>
+                        <h4> &#129001 Perfect</h4>
+                        <h4> &#129000 Over-Irrigated</h4>
+                    </div>
+                </div>  
+            </div>
+        <p></p>        
+        <script>
+            var soil_moisture = JSON.parse("{{soil_moisture|escapejs}}");
+            var water_irrigated = JSON.parse("{{water_irrigated|escapejs}}");
+            var waterlabels = "{{graph_waterlabels}}".split(',');
+            var seed_types_count = JSON.parse("{{seed_types_count|escapejs}}");
+            var seed_pie_colours = "{{seed_pie_colours}}".split(',');
+            var seedtypelabels = "{{graph_typelabels}}".split(',');
+            var tomato_plant_height1 = JSON.parse("{{tomato_plant_height1|escapejs}}");
+            var greengram_plant_height1 = JSON.parse("{{greengram_plant_height1|escapejs}}"); 
+            var tomato_plant_height2 = JSON.parse("{{tomato_plant_height2|escapejs}}");
+            var greengram_plant_height2 = JSON.parse("{{greengram_plant_height2|escapejs}}"); 
+            var tomato_plant_height3 = JSON.parse("{{tomato_plant_height3|escapejs}}");
+            var greengram_plant_height3 = JSON.parse("{{greengram_plant_height3|escapejs}}"); 
+            var heightlabels = "{{graph_heightlabels}}".split(',');
+            var heightlabels2 = "{{graph_heightlabels2}}".split(',');
+            var seeds_sown_count = JSON.parse("{{seeds_sown_count|escapejs}}");
+            var plants_harvested_count = JSON.parse("{{plants_harvested_count|escapejs}}");
+            var yieldlabels = "{{graph_yieldlabels}}".split(',');
+            var todaySoilMoisture = parseInt("{{todaySoilMoisture}}");
+
+            new Chart("lineChart", {
+                type:"line",
+                data: {
+                    labels: waterlabels,
+                    datasets: [{
+                        label: "Soil Moisture",
+                        data: soil_moisture,
+                        backgroundColor: "#ffb1c1",
+                        borderColor:"#ff6384",
+                    }, 
+                    {
+                        label: "Water",
+                        data: water_irrigated,
+                        backgroundColor: "#ccb2ff",
+                        borderColor:"#9966ff",
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: {display: true},
+                    plugins:{
+                        legend: {
+                            labels:{font:{size:"25%"},
+                                color:"black"}
+                        },
+                    },
+                    scales: {
+                        x: {ticks:{color:"black"}},
+                        y: {ticks:{color:"black"}
+                        }
+                    }
+                }
+            });
+            new Chart("pieChart", {
+                type:"doughnut",
+                data: {
+                    labels: seedtypelabels,
+                    datasets: [{
+                        label: "Seed Types",
+                        data: seed_types_count,
+                        backgroundColor: seed_pie_colours,
+                        borderColor:"white"
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins:{
+                        legend:{
+                            labels:{
+                                font:{
+                                    size:"25%"
+                                }, color:"black"
+                            }
+                        }
+                    },
+                    title: {
+                        display:true,
+                        text: "Seed Types Pie Chart",
+                    }
+                }
+            });
+            new Chart("barChart1", {
+                type:"bar",
+                data: {
+                    labels: heightlabels,
+                    datasets: [{
+                        label: "Sunlight Plants",
+                        data: greengram_plant_height1,
+                        backgroundColor: "#0ed145",
+                        borderColor: "#1b9b3f",
+                        borderWidth: 4
+                    },{
+                        label: "Red & Blue LEDs Plants",
+                        data: greengram_plant_height3,
+                        backgroundColor: "#ffb1c1",
+                        borderColor: "#ff6384",
+                        borderWidth: 4
+                    },{
+                        label: "UV-C Light Plants",
+                        data: greengram_plant_height2,
+                        backgroundColor: "#fd6eff",
+                        borderColor:"#e742e9",
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins:{
+                        legend: {
+                            labels:{
+                                font:{
+                                    size:"25%"},
+                                color:"black"}
+                        },
+                    },
+                    scales: {
+                        x: {ticks:{color:"black"}},
+                        y: {ticks:{color:"black"}
+                        }
+                    },
+                }
+            });
+            new Chart("barChart2", {
+                type:"bar",
+                data: {
+                    labels: heightlabels2,
+                    datasets: [{
+                        label: "Sunlight Plants",
+                        data: tomato_plant_height1,
+                        backgroundColor: "#ffb1c1",
+                        borderColor: "#ff6384",
+                        borderWidth: 4
+                    },{
+                        label: "Red & Blue LEDs Plants",
+                        data: tomato_plant_height3,
+                        backgroundColor: "#70b1dd",
+                        borderColor: "#6d9fc1",
+                        borderWidth: 4
+                    },{
+                        label: "UV-C Light Plants",
+                        data: tomato_plant_height2,
+                        backgroundColor: "#fd6eff",
+                        borderColor:"#e742e9",
+                        borderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins:{
+                        legend: {
+                            labels:{font:{size:"25%"},
+                                color:"black"}
+                        },
+                    },
+                    scales: {
+                        x: {ticks:{color:"black"}},
+                        y: {ticks:{color:"black"}
+                        }
+                    },
+                }
+            });
+            new Chart("linebarChart", {
+                type:"line",
+                data: {
+                    labels: yieldlabels,
+                    datasets: [{
+                        label: "Harvest",
+                        data: plants_harvested_count,
+                        stack: 'combined',
+                        type: 'bar',
+                        backgroundColor: "#ffb1c1",
+                        borderColor: "#ff6384",
+                        borderWidth: 4
+                    }, 
+                    {
+                        label: "Seeds Sown",
+                        data: seeds_sown_count,
+                        backgroundColor: "#ffe6aa",
+                        borderColor:"#ffcd56",
+                        stack: 'combined',
+                        type: 'line'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins:{
+                        legend: {
+                            labels:{font:{size:"25%"},
+                                color:"white"}
+                        },
+                    },
+                    scales: {
+                        x: {grid: {color: "#5b5b62"}, ticks:{color:"white"}},
+                        y: {
+                            stacked: true,
+                            grid:{color:"#5b5b62"},
+                            ticks:{color:"white"}
+                        }
+                    },
+                }
+            });
+            //stole code from here: https://gist.github.com/Athesto/be248a02a0691c29c41db41e32008f21
+            var opts = {
+                angle:0,
+                lineWidth:0.2,
+                radiusScale:0.89,
+                pointer:{
+                    length:0.54,
+                    strokeWidth:0.053,
+                    color:"black",
+                },
+                limitMax:false,
+                limitMin:false,
+                colorStart:'#6FADCF',
+                colorStop:'#8FC0DA',
+                strokeColor:'#E0E0E0',
+                generateGradient:true,
+                highDpiSupport:true,
+                staticZones:[
+                    {strokeStyle:'blue', min:0,max:20},
+                    {strokeStyle:'green', min:20, max:80},
+                    {strokeStyle:'yellow', min:80, max:100},
+                ],
+            };
+            var target = document.getElementById('gaugeChart');
+            var gauge = new Gauge(target).setOptions(opts);
+            gauge.maxValue = 100;
+            gauge.setMinValue(0);
+            gauge.animationSpeed = 50;
+            gauge.set(todaySoilMoisture);
+    </script>
+    </body>
+    </body>
+</html>
